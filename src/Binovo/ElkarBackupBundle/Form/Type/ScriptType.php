@@ -29,7 +29,9 @@ class ScriptType extends AbstractType
                 ->add('isJobPre'    , 'checkbox', array('label' => $t->trans('Runs as before job script', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
                 ->add('isJobPost'   , 'checkbox', array('label' => $t->trans('Runs as after job script', array(), 'BinovoElkarBackup'),
-                                                        'required' => false));
+                                                        'required' => false))
+		        ->add('isRemote'    , 'checkbox', array('label' => $t->trans('Client side script', array(), 'BinovoElkarBackup'),
+							                            'required' => false));
     }
 
     public function getDefaultOptions(array $options)
