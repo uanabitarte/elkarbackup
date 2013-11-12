@@ -21,6 +21,7 @@
 'Runs as before job script': 'Exekutatu lan baten Pre-script moduan'
 'Runs as after client script': 'Exekutatu bezero baten Post-script moduan'
 'Runs as after job script': 'Exekutatu lan baten Post-script moduan'
+'Client side script': 'Exekutatu bezeroan'
 'Used by': 'Hemen erabiltzen da'
 'Scripts': 'Script-ak'
 'Sort jobs': 'Lanak ordenatu'
@@ -333,6 +334,7 @@ script_help: |
  <h4>Scritp-ei buruz</h4>
  Aplikazioak script-ak exekutatzen ditu backup erabiltzailea erabiliz. Script-ak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
  <ul>
+  <li>ELKARBACKUP_REMOTESCRIPT:	1 balioa du bezeroan exekutatzen denean</li>
   <li>ELKARBACKUP_LEVEL:  bere balioa JOB edo CLIENT izan daiteke</li>
   <li>ELKARBACKUP_EVENT:  bere balioa PRE edo POST izan daiteke</li>
   <li>ELKARBACKUP_URL:    bere balioa lana edo bezeroaren URL osoa da</li>
@@ -355,3 +357,5 @@ script_help: |
  Markatu ezazu beti ere script hau lan baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
  <h4>Lanaren post-script moduan exekutatu daiteke</h4>
  Markatu ezazu beti ere script hau lan baten exekuzioa bukatu ondoren abian jartzeko diseinatuta dagoenean.
+ <h4>Exekutatu bezeroan</h4>
+ Markatu ezazu beti ere script hau bezeroan bertan exekutatzeko diseinatuta dagoenean.
