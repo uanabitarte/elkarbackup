@@ -358,7 +358,6 @@ class Script
      */
     public function getIsRemote()
     {
-	syslog(LOG_WARNING, "getIsRemote");
         return $this->isRemote;
     }
 
