@@ -255,6 +255,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         }
         $scriptName = $script->getName();
         $scriptFile = $script->getScriptPath();
+	$scriptIsRemote = $script->getIsRemote();
         if (!file_exists($scriptFile)) {
             $this->err($errScriptMissing,
                        array('%entityid%'   => $entity->getId(),
@@ -266,14 +267,49 @@ abstract class BackupRunningCommand extends LoggingCommand
             return false;
         }
         $commandOutput = array();
-        $command       = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1',
-                                 $level,
+	
+	if (!$scriptIsRemote){
+	    
+		// Server (local) script
+        	$command  = sprintf('env ELKARBACKUP_REMOTESCRIPT="%s" ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1',
+                                 $scriptIsRemote,
+				 $level,
                                  'pre' == $type ? 'PRE' : 'POST',
                                  $entity->getUrl(),
                                  $entity->getId(),
                                  $entity->getSnapshotRoot(),
                                  $status,
                                  $scriptFile);
+	} else {
+	
+            	// Client (remote) script
+		if (substr($client->getUrl, -1) != ":")
+	    	{
+			// SSH configured
+	    		$sshurl = explode(":",$entity->getUrl())[0];
+	    		$command = sprintf('ssh %s -o StrictHostKeyChecking=no \'env ELKARBACKUP_REMOTESCRIPT="%s" ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" bash -s\' < "%s" 2>&1',
+						$sshurl,
+						$scriptIsRemote,
+	   			 	   	$level,
+				    		'pre' == $type ? 'PRE' : 'POST',
+					    	$entity->getUrl(),
+				    		$entity->getId(),
+				    		$entity->getSnapshotRoot(),
+				    		$status,
+				    		$scriptFile);
+	    	} else {
+			// Not SSH access configured
+			$this->err($errScriptError,
+				   array('%entityid%'	=> $entity->getId(),
+				   	 '%output%'	=> "\nClient-side script needs SSH access",
+					 '%scriptname%'	=> $scriptName,
+					 '%scripttype%'	=> $type),
+				   $context);
+
+			return false;
+            	}
+	}
+
         exec($command, $commandOutput, $status);
         if (0 != $status) {
             $this->err($errScriptError,
