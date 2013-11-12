@@ -9,6 +9,7 @@
 'Runs as after client script': 'Ejecutar como post-script de clientes'
 'Runs as before job script': 'Ejecutar como pre-script de tareas'
 'Runs as after job script': 'Ejecutar como post-script de tareas'
+'Client side script': 'Ejecutar en el cliente'
 'Used by': 'Utilizado por'
 'Directory': 'Carpeta'
 'Hizkuntza': 'Idioma'
@@ -302,6 +303,7 @@ script_help: |
  <h4>Acerca de los scripts</h4>
  La aplicación ejecuta los scripts utilizando el usuario para backups. Antes de la ejecución de los scripts, la aplicación modifica el valor de estas variables de entorno.
  <ul>
+  <li>ELKARBACKUP_REMOSCRIPT:	su valor es 1 cuando se ejecuta en el cliente</li>
   <li>ELKARBACKUP_LEVEL:  su valor puede ser JOB o CLIENT</li>
   <li>ELKARBACKUP_EVENT:  su valor puede ser PRE o POST</li>
   <li>ELKARBACKUP_URL:    su valor será la URL completa de la tarea o del cliente</li>
@@ -317,11 +319,12 @@ script_help: |
  <h4>Archivo</h4>
  Explora y selecciona el script que quieres subir.
  <h4>Ejecutar como pre-script de clientes</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de un cliente.
+ Activa esta opción si este script está diseñado para ser ejecutado antes de la ejecución de un cliente.
  <h4>Ejecutar como post-script de clientes</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de un cliente.
+ Activa esta opción si este script está diseñado para ser ejecutado después de la ejecución de un cliente.
  <h4>Ejecutar como pre-script de tareas</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de una tarea.
+ Activa esta opción si este script está diseñado para ser ejecutado antes de la ejecución de una tarea.
  <h4>Ejecutar como post-script de tareas</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de una tarea.
-
+ Activa esta opción si este script está diseñado para ser ejecutado después de la ejecución de una tarea.
+ <h4>Ejecutar en el cliente</h4>
+ Activa esta opción si este script está diseñado para ser ejecutado en el cliente.
