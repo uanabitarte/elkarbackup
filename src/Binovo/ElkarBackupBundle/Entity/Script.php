@@ -70,6 +70,11 @@ class Script
      */
     protected $isJobPost;
 
+    /**
+     * True if script must run in the client
+     * @ORM\Column(type="boolean")
+     */
+    protected $isRemote;
 
     /**
      * True if can run after the job
@@ -332,6 +337,29 @@ class Script
     public function getIsJobPost()
     {
         return $this->isJobPost;
+    }
+   
+    /**
+     * Set isRemote
+     *
+     * @param boolean $isRemote
+     * @return Script
+     */
+    public function setIsRemote($isRemote)
+    {
+        $this->isRemote = $isRemote;
+        return $this;
+    }
+
+    /**
+     * Get isRemote
+     *
+     * @return boolean
+     */
+    public function getIsRemote()
+    {
+	syslog(LOG_WARNING, "getIsRemote");
+        return $this->isRemote;
     }
 
     /**
