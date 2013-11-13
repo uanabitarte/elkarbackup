@@ -287,26 +287,26 @@ abstract class BackupRunningCommand extends LoggingCommand
 	    	{
 			// SSH configured
 			$url = explode(":",$entity->getUrl());
-	    		$sshurl = $url[0]; #get only user@host
-	    		$command = sprintf('ssh %s -o StrictHostKeyChecking=no \'env ELKARBACKUP_REMOTESCRIPT="%s" ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" bash -s\' < "%s" 2>&1',
-						$sshurl,
-						$scriptIsRemote,
-	   			 	   	$level,
-				    		'pre' == $type ? 'PRE' : 'POST',
-					    	$entity->getUrl(),
-				    		$entity->getId(),
-				    		$entity->getSnapshotRoot(),
-				    		$status,
-				    		$scriptFile);
-	    	} else {
+			$sshurl = $url[0]; #get only user@host
+			$command = sprintf('ssh %s -o StrictHostKeyChecking=no \'env ELKARBACKUP_REMOTESCRIPT="%s" ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" bash -s\' < "%s" 2>&1',
+					   $sshurl,
+					   $scriptIsRemote,
+					   $level,
+					   'pre' == $type ? 'PRE' : 'POST',
+					   $entity->getUrl(),
+					   $entity->getId(),
+					   $entity->getSnapshotRoot(),
+					   $status,
+					   $scriptFile);
+		} else {
 			// Not SSH access configured
 			$this->err($errScriptError,
 				   array('%entityid%'	=> $entity->getId(),
 				   	 '%output%'	=> "\nClient-side script needs SSH access",
-					 '%scriptname%'	=> $scriptName,
-					 '%scripttype%'	=> $type),
+				   	 '%scriptname%'	=> $scriptName,
+				   	 '%scripttype%'	=> $type),
 				   $context);
-
+			
 			return false;
             	}
 	}
