@@ -283,10 +283,11 @@ abstract class BackupRunningCommand extends LoggingCommand
 	} else {
 	
             	// Client (remote) script
-		if (substr($client->getUrl, -1) != ":")
+		if (substr($entity->getUrl, -1) != ":")
 	    	{
 			// SSH configured
-	    		$sshurl = explode(":",$entity->getUrl())[0];
+			$url = explode(":",$entity->getUrl());
+	    		$sshurl = $url[0]; #get only user@host
 	    		$command = sprintf('ssh %s -o StrictHostKeyChecking=no \'env ELKARBACKUP_REMOTESCRIPT="%s" ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" bash -s\' < "%s" 2>&1',
 						$sshurl,
 						$scriptIsRemote,
