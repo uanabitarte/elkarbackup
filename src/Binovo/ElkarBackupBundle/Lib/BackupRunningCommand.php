@@ -255,7 +255,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         }
         $scriptName = $script->getName();
         $scriptFile = $script->getScriptPath();
-	$scriptIsRemote = $script->getIsRemote();
+        $scriptIsRemote = $script->getIsRemote();
         if (!file_exists($scriptFile)) {
             $this->err($errScriptMissing,
                        array('%entityid%'   => $entity->getId(),
