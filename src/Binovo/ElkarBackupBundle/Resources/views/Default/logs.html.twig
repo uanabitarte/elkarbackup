@@ -26,8 +26,10 @@ ws.onmessage = function(event) {
     var cell4 = row.insertCell(3);
     var cell5 = row.insertCell(4);
     var cell6 = row.insertCell(5);
-    var logdate = logrecord['dateTime'];
-    cell1.innerHTML = `{% set logdate = '${logdate}'  %} {{ logdate.date|date('Y-m-d H:i:s') }}`;
+    //var logdate = logrecord['dateTime'];
+    var logdate = new Date().toLocaleString(); // 12/10/2015 13:36:41
+    logdate = logdate.replace(/\//g, "-");
+    cell1.innerHTML = logdate;
     cell2.innerHTML = logrecord['levelName'];
     cell3.innerHTML = logrecord['source'];
     cell4.innerHTML = logrecord['userName'];
