@@ -7,10 +7,41 @@
 
 {% block body %}
 
+<script>
+var ws = new WebSocket('ws://' + (location.host + ":8080") + "/");
+ws.onmessage = function(event) {
+    var logrecord = JSON.parse(event.data);
+    var table =  document.getElementById("tLogs");
+    var row = table.insertRow(1);
+    if (logrecord['levelName'] == 'ERROR'){
+        row.className = 'danger';
+    } else if (logrecord['levelName'] == 'WARNING'){
+        row.className = 'warning';
+    } else if (logrecord['message'] == 'OK') {
+        row.className = 'success';
+    }
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    var cell4 = row.insertCell(3);
+    var cell5 = row.insertCell(4);
+    var cell6 = row.insertCell(5);
+    var logdate = logrecord['dateTime'];
+    cell1.innerHTML = `{% set logdate = '${logdate}'  %} {{ logdate.date|date('Y-m-d H:i:s') }}`;
+    cell2.innerHTML = logrecord['levelName'];
+    cell3.innerHTML = logrecord['source'];
+    cell4.innerHTML = logrecord['userName'];
+    cell5.innerHTML = logrecord['message'];
+    if (logrecord['link']){
+        cell6.innerHTML = "<a href=\""+logrecord['link']+"\">"+logrecord['link']+"<\a>";
+    }
+}
+</script>
+
 <h3>{% trans %}Logs{% endtrans %}</h3>
 
 <form action="{{ path('showLogs') }}">
-<table class="table table-condensed table-hover table-striped">
+<table id="tLogs" class="table table-condensed table-hover table-striped">
     <tr>
         {# sorting of properties based on query components #}
         <th>{% trans %}Time{% endtrans %}</th>
