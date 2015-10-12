@@ -27,36 +27,40 @@ class ShowLogsCommand extends LoggingCommand
     {
         parent::configure();
         $this->setName('elkarbackup:logs')
-             ->setDescription('Show logs');
+             ->setDescription('Stream logs in JSON format');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-	$id = null;
 	$encoders = array(new XmlEncoder(), new JsonEncoder());
-	$normalizers = array(new GetSetMethodNormalizer());
-	$serializer = new Serializer($normalizers, $encoders);
-	$repository = $this->getContainer()->get('doctrine')
-                ->getRepository('BinovoElkarBackupBundle:LogRecord');
-	$queryBuilder = $repository->createQueryBuilder('l')
-                ->addOrderBy('l.id', 'DESC');
-	$queryParamCounter = 1;
-	//$query = $queryBuilder->getQuery();/
-	while(1){
-	  //$repository = $this->getContainer()->get('doctrine')
-	  //	->getRepository('BinovoElkarBackupBundle:LogRecord');
-	  //$queryBuilder = $repository->createQueryBuilder('l')
-	  //	->addOrderBy('l.id', 'DESC');
-	  //$queryParamCounter = 1;
-	  //$queryBuilder->where("1 = 1");
-	  $query = $queryBuilder->getQuery();
-	  $logrecord = $query->setMaxResults(1)->getOneOrNullResult();
-	  if ($logrecord->getId() != $id){
-	    $json = $serializer->serialize($logrecord, 'json');
-	    echo "$json\n";
-	    $id = $logrecord->getId();
-	    usleep(500000); 
-	  }
-	}
+        $normalizers = array(new GetSetMethodNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+	$container = $this->getContainer();
+	$manager = $container->get('doctrine')->getManager();
+	$repository = $manager->getRepository('BinovoElkarBackupBundle:LogRecord');
+	$logrecord = $repository->createQueryBuilder('l')
+		->orderby('l.id', 'DESC')
+		->getQuery()
+		->setMaxResults(1)
+		->getResult();
+	$lastlogid = $logrecord[0]->getId();
+	while(true){
+	    $logrecord = $repository->createQueryBuilder('l')
+		->where('l.id = :lastlogid')
+		->setParameter('lastlogid', $lastlogid+1)
+		->orderby('l.id', 'DESC')
+		->getQuery()
+		->setMaxResults(1)
+		->getResult();
+	    
+	    if (count($logrecord) != 0) {
+	    	$logrecord = $logrecord[0];
+		$json = $serializer->serialize($logrecord, 'json');
+		echo "$json\n";
+		$lastlogid = $logrecord->getId();
+	    }
+	    $manager = flush();
+	    usleep(500000);
+	}	
     }
 }
