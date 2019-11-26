@@ -25,10 +25,10 @@ if [ -z "$HTTPDUSER" ];then
     HTTPDUSER="www-data"
 fi
 
-setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
-setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
-setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
-setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
-setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
-setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
+setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx var/cache
+setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx var/cache
+setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx var/logs
+setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx var/logs
+setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx var/sessions
+setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx var/sessions
 composer install --no-interaction
