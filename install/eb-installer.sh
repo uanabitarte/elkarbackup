@@ -388,7 +388,7 @@ function bootstrap
 function update_db
 {
   # Delete cache content
-  rm -fR $EB_PATH/app/cache/*
+  rm -fR $EB_PATH/var/cache/*
 
   # Update DB (delete a buggy diff)
   rm -f $EB_PATH/app/DoctrineMigrations/Version20130306101349.php
@@ -414,7 +414,7 @@ function dump_assets
 
 function invalidate_sessions
 {
-  rm -rf $EB_PATH/app/sessions/*
+  rm -rf $EB_PATH/var/sessions/*
 }
 
 function configure_apache
@@ -449,9 +449,9 @@ function configure_apache
     sed -i 's~/usr/share/elkarbackup/web~'$EB_PATH'/web~' /etc/httpd/conf.d/elkarbackup.conf || return 1
 
     # SELinux
-    chcon -t httpd_sys_rw_content_t $EB_PATH/app/cache/ -R
-    chcon -t httpd_sys_rw_content_t $EB_PATH/app/sessions/ -R
-    chcon -t httpd_sys_rw_content_t $EB_PATH/app/logs/ -R
+    chcon -t httpd_sys_rw_content_t $EB_PATH/var/cache/ -R
+    chcon -t httpd_sys_rw_content_t $EB_PATH/var/sessions/ -R
+    chcon -t httpd_sys_rw_content_t $EB_PATH/var/logs/ -R
 
     $apache -S || return 1
   else
