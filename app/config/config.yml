@@ -4,16 +4,16 @@ imports:
 
 framework:
     #esi:             ~
-    translator:      { fallback: %locale% }
-    secret:          %secret%
+    translator:      { fallback: '%locale%' }
+    secret:          '%secret%'
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
-        strict_requirements: %kernel.debug%
+        strict_requirements: '%kernel.debug%'
     form:            true
     csrf_protection: true
     validation:      { enable_annotations: true }
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
-    default_locale:  %locale%
+    default_locale:  '%locale%'
     #trust_proxy_headers: false # Whether or not the Request object should trust proxy headers (X_FORWARDED_FOR/HTTP_CLIENT_IP)
     session:
         handler_id: session.handler.native_file
@@ -21,14 +21,14 @@ framework:
 
 # Twig Configuration
 twig:
-    debug:            %kernel.debug%
-    strict_variables: %kernel.debug%
+    debug:            '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
     globals:
-        warning_load_level: %warning_load_level%
-        url_prefix: %url_prefix%
+        warning_load_level: '%warning_load_level%'
+        url_prefix: '%url_prefix%'
 # Assetic Configuration
 assetic:
-    debug:          %kernel.debug%
+    debug:          '%kernel.debug%'
     use_controller: false
     # bundles:        [ ]
     #java: /usr/bin/java
@@ -42,32 +42,32 @@ assetic:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   %database_driver%
-        host:     %database_host%
-        port:     %database_port%
-        dbname:   %database_name%
-        user:     %database_user%
-        password: %database_password%
+        driver:   '%database_driver%'
+        host:     '%database_host%'
+        port:     '%database_port%'
+        dbname:   '%database_name%'
+        user:     '%database_user%'
+        password: '%database_password%'
         charset:  UTF8
         server_version: 5.5
 
     orm:
-        auto_generate_proxy_classes: %kernel.debug%
+        auto_generate_proxy_classes: '%kernel.debug%'
         auto_mapping: true
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport: %mailer_transport%
-    host:      %mailer_host%
-    username:  %mailer_user%
-    password:  %mailer_password%
+    transport: '%mailer_transport%'
+    host:      '%mailer_host%'
+    username:  '%mailer_user%'
+    password:  '%mailer_password%'
     # spool:     { type: memory }
 
 monolog:
     handlers:
         main:
             type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
+            path:  '%kernel.logs_dir%/%kernel.environment%.log'
             level: debug
         firephp:
             type:  firephp
@@ -81,6 +81,7 @@ services:
             - [pushProcessor, ['@BnvWebUserLoggerProcessor']]
             - [pushHandler,   ['@StreamHandler']]
             - [pushHandler,   ['@BnvLoggerHandler']]
+        public: true
     BnvLoggerHandler:
         class: Binovo\ElkarBackupBundle\Logger\LoggerHandler
         calls:
@@ -88,7 +89,7 @@ services:
     StreamHandler:
         class: Monolog\Handler\StreamHandler
         # 200 = INFO, see Monolog::Logger for the values of log levels
-        arguments: [%kernel.logs_dir%/BnvLog.log, 200]
+        arguments: ['%kernel.logs_dir%/BnvLog.log', 200]
         calls:
             - [setFormatter, ['@BnvWebLoggerFormatter']]
     BnvWebUserLoggerProcessor:
@@ -118,6 +119,10 @@ services:
             - { name: kernel.event_subscriber }
     Tahoe:
         class: Binovo\ElkarTahoeBundle\Utils\TahoeBackup
-        arguments: ['@BnvWebLogger', %home%]
+        arguments: ['@BnvWebLogger', '%home%']
+        public: true
 parameters:
     supported_locales: [es, en, eu, de]
+jms_di_extra:
+    doctrine_integration: false
+
