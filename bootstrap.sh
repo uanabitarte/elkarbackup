@@ -19,10 +19,6 @@ then
     curl -o web/js/jquery/jquery-1.12.0.min.js http://code.jquery.com/jquery-1.12.0.min.js
 fi
 
-mkdir -p app/cache
-mkdir -p app/logs
-mkdir -p app/sessions
-
 HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
 if [ -z "$HTTPDUSER" ];then
     # Apache not running, use default username "www-data"
