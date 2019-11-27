@@ -351,30 +351,65 @@ class DefaultController extends Controller
             'disable_background' => $disable_background
         ));
     }
-
+    
+    /**
+     * @Route("/client/new", name="newClient")
+     */
+    public function newClientAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $client = new Client();
+        
+        $form = $this->createForm(ClientType::class, $client, array(
+            'translator' => $this->get('translator')
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $client = $form->getData();
+            
+            $em->persist($client);
+            $em->flush();
+            
+            $this->debug(
+                'Save new client %clientid%',
+                array('%clientid%' => $client->getId()),
+                array('link' => $this->generateClientRoute($client->getId()))
+            );
+            
+            return $this->redirect($this->generateUrl('showClients'));
+        } else {
+            $this->debug(
+                'Edit new client %clientid%'
+            );
+            $em->flush();
+            
+            return $this->render(
+                'BinovoElkarBackupBundle:Default:client.html.twig',
+                array('form' => $form->createView())
+            );
+        }
+    }
+    
     /**
      * @Route("/client/{id}", name="editClient")
      *
      * @method ("GET")
      *         @Template()
      */
-    public function editClientAction(Request $request, $id = 'new')
+    public function editClientAction(Request $request, $id)
     {
-        if ('new' === $id) {
-            $client = new Client();
-        } else {
-            $access = $this->checkPermissions($id);
-            if ($access == False) {
-                return $this->redirect($this->generateUrl('showClients'));
-            }
-            
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
-            $client = $repository->find($id);
-            if (null == $client) {
-                throw $this->createNotFoundException(
-                    $this->trans('Unable to find Client entity:') . $id
-                );
-            }
+        $access = $this->checkPermissions($id);
+        if ($access == False) {
+            return $this->redirect($this->generateUrl('showClients'));
+        }
+        
+        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $client = $repository->find($id);
+        if (null == $client) {
+            throw $this->createNotFoundException(
+                $this->trans('Unable to find Client entity:') . $id
+            );
         }
         
         $form = $this->createForm(ClientType::class, $client, array(
@@ -407,12 +442,8 @@ class DefaultController extends Controller
         $actualuserid = $user->getId();
         
         $t = $this->get('translator');
-        if ("-1" === $id) {
-            $client = new Client();
-        } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
-            $client = $repository->find($id);
-        }
+        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $client = $repository->find($id);
         
         $form = $this->createForm(
             ClientType::class,
