@@ -28,7 +28,7 @@
 </form>
 <br />
 <br />
-<form class="form-horizontal" action="{{ path('configureRepositoryBackupScript') }}" method="post" {{ form_enctype(authorizedKeysForm) }}>
+{{ form_start(form, {'attr': {'class': 'form-horizontal', 'method': 'POST', 'action': "{{ path('configureRepositoryBackupScript') }}" }}) }}
     <legend>{% trans %}Authorized keys{% endtrans %}</legend>
     <div class="row">
         <div id="public-keys" class="col-md-6">
@@ -60,7 +60,7 @@
             {% trans %}backupscriptconfig_help{% endtrans %}
         </div>
     </div>
-</form>
+{{ form_end(form) }}
 <div style="display:none" id="prototype">
     <div class="control-group">
         <label class="control-label">{% trans %}Comment / Key{% endtrans %}</label>
