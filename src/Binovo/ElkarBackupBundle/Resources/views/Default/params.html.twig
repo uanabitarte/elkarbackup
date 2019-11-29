@@ -12,7 +12,7 @@
 {% endif %}
 </form>
 <h3>{% trans %}Manage parameters{% endtrans %}</h3>
-<form class="form-horizontal" action="{{ path('manageParameters') }}" method="post" {{ form_enctype(form) }}>
+{{ form_start(form, {'attr': {'class': 'form-horizontal', 'method': 'POST', 'action': "{{ path('manageParameters') }}" }}) }}
     <div class="row">
         <div class="col-md-6">
             {% for flashMessage in app.session.flashbag.get('manageParameters') %}
@@ -43,6 +43,6 @@
             {% trans %}params_help{% endtrans %}
         </div>
     </div>
-</form>
+{{ form_end(form) }}
 
 {% endblock %}

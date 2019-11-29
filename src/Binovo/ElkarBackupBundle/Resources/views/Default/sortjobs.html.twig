@@ -26,7 +26,8 @@
             {{ flashMessage }}
         </div>
 {% endfor %}
-        <form action="{{ path('sortJobs') }}" method="post" {{ form_enctype(form) }}>
+        {{ form_start(form, {'attr': {'method': 'POST', 'action': "{{ path('sortJobs') }}" }}) }}
+
             <table id="jobs" class="table table-condensed table-bordered table-hover">
                 <tr>
                     {# sorting of properties based on query components #}
@@ -44,7 +45,7 @@
             </table>
             <button class="btn btn-elkarbackup pull-right" type="submit">{% trans %}Save{% endtrans %}</button>
             {{ form_rest(form) }}
-        </form>
+        {{ form_end(form) }}
         </div>
         <div class="col-md-6">
           {% trans %}sort_jobs_help{% endtrans %}
