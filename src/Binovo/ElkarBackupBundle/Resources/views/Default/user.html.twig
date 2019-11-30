@@ -7,7 +7,8 @@
 
 {% block body %}
 
-{{ form_start(form, {'attr': {'class': 'form-horizontal', 'method': 'POST', 'action': "{{ path('saveUser', {id: form.vars.value.id}) }}" }}) }}
+{{ form_start(form, {'attr': {'class': 'form-horizontal', 'method': 'POST', 'action': path('saveUser', {id: form.vars.value.id})}}) }}
+
     <h3>{% trans %}Edit User{% endtrans %}</h3>
     <div class="row">
         <div class="col-md-6">

@@ -2749,7 +2749,7 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
             $user = $repository->find($id);
         }
-        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
+        $form = $this->createForm(UserType::class, $user, array('translator' => $t));
         $this->debug(
             'View user %username%.',
             array('%username%' => $user->getUsername()),
@@ -2778,8 +2778,9 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
             $user = $repository->find($id);
         }
-        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
-        $form->bind($request);
+        $form = $this->createForm(UserType::class, $user, array('translator' => $t));
+//        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             if ($user->newPassword) {
                 $encoder = $this->container->get('security.password_encoder');
