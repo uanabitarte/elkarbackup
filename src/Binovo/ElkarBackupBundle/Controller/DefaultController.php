@@ -49,6 +49,12 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Binovo\ElkarBackupBundle\BinovoElkarBackupBundle;
 use Binovo\ElkarBackupBundle\Entity\Queue;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
+
 
 class DefaultController extends Controller
 {
@@ -2110,37 +2116,37 @@ EOF;
         $t = $this->get('translator');
         $params = array(
             'database_host' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL host', array(), 'BinovoElkarBackup')
             ),
             'database_port' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL port', array(), 'BinovoElkarBackup')
             ),
             'database_name' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL DB name', array(), 'BinovoElkarBackup')
             ),
             'database_user' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL user', array(), 'BinovoElkarBackup')
             ),
             'database_password' => array(
-                'type' => 'password',
+                'type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL password', array(), 'BinovoElkarBackup')
             ),
             'mailer_transport' => array(
-                'type' => 'choice',
+                'type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
@@ -2152,31 +2158,31 @@ EOF;
                 'label' => $t->trans('Mailer transport', array(), 'BinovoElkarBackup')
             ),
             'mailer_host' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer host', array(), 'BinovoElkarBackup')
             ),
             'mailer_user' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer user', array(), 'BinovoElkarBackup')
             ),
             'mailer_password' => array(
-                'type' => 'password',
+                'type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer password', array(), 'BinovoElkarBackup')
             ),
             'mailer_from' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer from', array(), 'BinovoElkarBackup')
             ),
             'max_log_age' => array(
-                'type' => 'choice',
+                'type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
@@ -2196,36 +2202,36 @@ EOF;
                 'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')
             ),
             'warning_load_level' => array(
-                'type' => 'percent',
+                'type' => PercentType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')
             ),
             'pagination_lines_per_page' => array(
-                'type' => 'integer',
+                'type' => IntegerType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Records per page', array(), 'BinovoElkarBackup')
             ),
             'url_prefix' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Url prefix', array(), 'BinovoElkarBackup')
             ),
             'disable_background' => array(
-                'type' => 'checkbox',
+                'type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Disable background', array(), 'BinovoElkarBackup')
             ),
             'max_parallel_jobs' => array(
-                'type' => 'integer',
+                'type' => IntegerType::class,
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
             ),
             'post_on_pre_fail' => array(
-                'type' => 'checkbox',
+                'type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
             ),

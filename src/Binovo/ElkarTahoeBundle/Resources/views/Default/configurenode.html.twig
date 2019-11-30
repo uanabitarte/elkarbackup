@@ -16,7 +16,7 @@
 
 {% block body %}
 
-<form class="form-horizontal" action="{{ path('tahoeConfig') }}" method="post" {{ form_enctype(form) }}>
+{{ form_start(form, {'attr': {'class': 'form-horizontal', 'method': 'POST', 'action': path('tahoeConfig')}}) }}
     {% if newWritecap is not empty %}
         <div class="row text-center">
             <h4>
@@ -60,6 +60,6 @@
             {{ nodeDir ~ 'storage/shares/'}}</p>
         </div>
     </div>
-</form>
+{{ form_end }}
 
 {% endblock %}
