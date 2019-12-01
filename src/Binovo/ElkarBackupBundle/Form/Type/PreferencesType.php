@@ -10,6 +10,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+
+
 class PreferencesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -22,12 +26,12 @@ class PreferencesType extends AbstractType
 	  'Deutsch'  => 'de',
         );
 
-        $builder->add('language'    , 'choice'      , array('label'   => $t->trans('Language', array(), 'BinovoElkarBackup'),
+        $builder->add('language'    , ChoiceType::class     , array('label'   => $t->trans('Language', array(), 'BinovoElkarBackup'),
                                                           'attr'    => array('class'    => 'form-control'),
                                                           'choices' => $languages,
                                                           'choices_as_values' => true,
                                                           ))
-	              ->add('linesperpage', 'integer'   , array('label'   => $t->trans('Records per page', array(), 'BinovoElkarBackup'),
+	              ->add('linesperpage', IntegerType::class   , array('label'   => $t->trans('Records per page', array(), 'BinovoElkarBackup'),
                                                           'attr'    => array('class'    => 'form-control')));
     }
 

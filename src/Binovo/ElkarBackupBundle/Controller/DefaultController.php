@@ -2996,13 +2996,13 @@ EOF;
         // Get current user
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $form = $this->createForm(
-            new PreferencesType(),
+            PreferencesType::class,
             $user,
             array('translator' => $t,'validation_groups' => array('preferences'))
         );
         
-        if ($request->isMethod('POST')) {
-            $form->bind($request);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($data);
@@ -3017,7 +3017,7 @@ EOF;
             $this->setLanguage($request, $language);
             return $this->redirect($this->generateUrl('managePreferences'));
         } else {
-            $this->info(
+            $this->debug(
                 'Manage preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->generateUserRoute($user->getId()))
