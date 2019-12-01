@@ -2419,66 +2419,6 @@ EOF;
             'BinovoElkarBackupBundle:Default:password.html.twig',
             array('form' => $form->createView())
         );
-
-        /*
-        if ($request->isMethod('POST')) {
-            $form->bind($request);
-            $data = $form->getData();
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $encoder = $this->container->get('security.password_encoder');
-            $ok = true;
-            if (empty($data['newPassword']) || $data['newPassword'] !== $data['newPassword2']) {
-                $ok = false;
-                $this->get('session')->getFlashBag()->add(
-                    'changePassword',
-                    $t->trans("Passwords do not match", array(), 'BinovoElkarBackup')
-                );
-                $this->info(
-                    'Change password for user %username% failed. Passwords do not match.',
-                    array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
-                );
-            }
-            if ($encoder->encodePassword($user, $data['oldPassword']) !== $user->getPassword()){
-                $ok = false;
-                $this->get('session')->getFlashBag()->add(
-                    'changePassword',
-                    $t->trans("Wrong old password", array(), 'BinovoElkarBackup')
-                );
-                $this->info(
-                    'Change password for user %username% failed. Wrong old password.',
-                    array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
-                );
-            }
-            if ($ok) {
-                $user->setPassword($encoder->encodePassword(
-                    $user,
-                    $data['newPassword']
-                ));
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($user);
-                $this->get('session')->getFlashBag()->add(
-                    'changePassword',
-                    $t->trans("Password changed", array(), 'BinovoElkarBackup')
-                );
-                $this->info(
-                    'Change password for user %username%.',
-                    array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
-                );
-                $manager->flush();
-            }
-            
-            return $this->redirect($this->generateUrl('changePassword'));
-        } else {
-            
-            return $this->render(
-                'BinovoElkarBackupBundle:Default:password.html.twig',
-                array('form' => $form->createView())
-            );
-        }
-        */
     }
 
     /**
