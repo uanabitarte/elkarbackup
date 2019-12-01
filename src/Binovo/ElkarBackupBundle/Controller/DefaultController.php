@@ -26,6 +26,8 @@ use Binovo\ElkarBackupBundle\Form\Type\RestoreBackupType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
 use Binovo\ElkarBackupBundle\Form\Type\PreferencesType;
+use Binovo\ElkarBackupBundle\Form\Type\ChangePasswordType;
+use Binovo\ElkarBackupBundle\Form\Model\ChangePasswordModel;
 use Binovo\ElkarBackupBundle\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -39,6 +41,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -2374,37 +2377,50 @@ EOF;
      */
     public function changePasswordAction(Request $request)
     {
-        $t = $this->get('translator');
-        $defaultData = array();
-        $form = $this->createFormBuilder($defaultData)->add(
-            'oldPassword',
-            'password',
-            array(
-                'required' => true,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Old password', array(), 'BinovoElkarBackup')
-            )
-        )
-        ->add(
-            'newPassword',
-            'password',
-            array(
-                'required' => true,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('New password', array(), 'BinovoElkarBackup')
-            )
-        )
-        ->add(
-            'newPassword2',
-            'password',
-            array(
-                'required' => true,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')
-            )
-        )
-        ->getForm();
+        $ChangePasswordModel = new ChangePasswordModel();
         
+        $t = $this->get('translator');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        
+        $form = $this->createForm(
+            ChangePasswordType::class,
+            $ChangePasswordModel,
+            array('translator' => $t)
+        );
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid()) {
+            $newPassword = $form->get('password')->getData();
+            
+            $encoder = $this->container->get('security.password_encoder');
+
+            $user->setPassword($encoder->encodePassword(
+                $user,
+                $newPassword
+            ));
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($user);
+            $this->get('session')->getFlashBag()->add(
+                'changePassword',
+                $t->trans("Password changed", array(), 'BinovoElkarBackup')
+            );
+            $this->info(
+                'Change password for user %username%.',
+                array('%username%' => $user->getUsername()),
+                array('link' => $this->generateUserRoute($user->getId()))
+            );
+            $manager->flush();
+            
+            return $this->redirectToRoute('changePassword');
+            
+        }
+        
+        return $this->render(
+            'BinovoElkarBackupBundle:Default:password.html.twig',
+            array('form' => $form->createView())
+        );
+
+        /*
         if ($request->isMethod('POST')) {
             $form->bind($request);
             $data = $form->getData();
@@ -2462,6 +2478,7 @@ EOF;
                 array('form' => $form->createView())
             );
         }
+        */
     }
 
     /**
