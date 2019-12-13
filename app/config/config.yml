@@ -26,6 +26,7 @@ twig:
     globals:
         warning_load_level: '%warning_load_level%'
         url_prefix: '%url_prefix%'
+        settings: '@Settings'
 # Assetic Configuration
 assetic:
     debug:          '%kernel.debug%'
@@ -121,6 +122,11 @@ services:
         class: Binovo\ElkarTahoeBundle\Utils\TahoeBackup
         arguments: ['@BnvWebLogger', '%home%']
         public: true
+    Settings:
+        class: Binovo\ElkarBackupBundle\Service\SettingsService
+        arguments: ['@doctrine.orm.entity_manager']
+        public: true
+    
 parameters:
     supported_locales: [es, en, eu, de]
 jms_di_extra:
