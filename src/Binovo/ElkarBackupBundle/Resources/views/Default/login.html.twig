@@ -9,23 +9,12 @@
 <html>
     <head>
         <title>{% block title %}ElkarBackup{% endblock %}</title>
-        <!-- Dojo 1.8.1-->
-        <link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
 
         <!-- Bootstrap 3.3-->
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" />
-
-        <!-- @ChristianGR elkarbackup theme -->
-        {% stylesheets '@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css' %}
-          <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
-        {% endstylesheets %}
-
-        {% block scripts %}
-        <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
-            {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-            {% endjavascripts %}
-        {% endblock %}
+        
+        <!-- Elkarbackup CSS -->
+        <link rel="stylesheet" href="{{ asset('css/elkarbackup.css') }}" media="screen" />
 
     </head>
     <body class="login {%if not disable_background %} bg2{% else %} nobg{% endif %}">
