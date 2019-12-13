@@ -661,7 +661,8 @@ EOF;
     
     protected function removeOldLogs()
     {
-        $maxAge  = $this->container->getParameter('max_log_age');
+        $settings = $this->getApplication()->getKernel()->getContainer()->get('settings');
+        $maxAge = $settings->getmaxLogAge();
         if (!empty($maxAge)) {
             $interval = new DateInterval($maxAge);
             $interval->invert = true;

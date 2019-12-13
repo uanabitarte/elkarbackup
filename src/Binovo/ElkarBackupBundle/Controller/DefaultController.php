@@ -16,6 +16,7 @@ use Binovo\ElkarBackupBundle\Entity\Message;
 use Binovo\ElkarBackupBundle\Entity\Policy;
 use Binovo\ElkarBackupBundle\Entity\Script;
 use Binovo\ElkarBackupBundle\Entity\User;
+use Binovo\ElkarBackupBundle\Entity\Settings;
 use Binovo\ElkarBackupBundle\Form\Type\AuthorizedKeyType;
 use Binovo\ElkarBackupBundle\Form\Type\BackupLocationType;
 use Binovo\ElkarBackupBundle\Form\Type\ClientType;
@@ -26,6 +27,7 @@ use Binovo\ElkarBackupBundle\Form\Type\RestoreBackupType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
 use Binovo\ElkarBackupBundle\Form\Type\PreferencesType;
+use Binovo\ElkarBackupBundle\Form\Type\SettingsType;
 use Binovo\ElkarBackupBundle\Form\Type\ChangePasswordType;
 use Binovo\ElkarBackupBundle\Form\Model\ChangePasswordModel;
 use Binovo\ElkarBackupBundle\Lib\Globals;
@@ -182,7 +184,7 @@ class DefaultController extends Controller
      */
     public function downloadPublicKeyAction(Request $request)
     {
-        if (!file_exists($this->container->getParameter('public_key'))) {
+        if (!file_exists($this->get('settings')->getPublicKey())) {
             throw $this->createNotFoundException(
                 $this->trans('Unable to find public key:')
             );
@@ -193,7 +195,7 @@ class DefaultController extends Controller
         );
         
         return new Response(file_get_contents(
-            $this->container->getParameter('public_key')),
+            $this->get('settings')->getPublicKey()),
             200,
             $headers
         );
@@ -1849,7 +1851,7 @@ EOF;
         $backupScriptForm = $backupScriptFormBuilder->getForm();
         
         $authorizedKeysFile = dirname(
-            $this->container->getParameter('public_key')
+            $this->get('settings')->getPublicKey()
         ) . '/authorized_keys';
         $keys = $this->readKeyFileAsCommentAndRest($authorizedKeysFile);
         $authorizedKeysFormBuilder = $this->createFormBuilder(array('publicKeys' => $keys));
@@ -2108,236 +2110,37 @@ EOF;
     }
 
     /**
-     * @Route("/config/params", name="manageParameters")
+     * @Route("/config/settings", name="settings")
      * @Template()
      */
-    public function manageParametersAction(Request $request)
+    public function editSettings(Request $request)
     {
-        $t = $this->get('translator');
-        $params = array(
-            'database_host' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('MySQL host', array(), 'BinovoElkarBackup')
-            ),
-            'database_port' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('MySQL port', array(), 'BinovoElkarBackup')
-            ),
-            'database_name' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('MySQL DB name', array(), 'BinovoElkarBackup')
-            ),
-            'database_user' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('MySQL user', array(), 'BinovoElkarBackup')
-            ),
-            'database_password' => array(
-                'type' => PasswordType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('MySQL password', array(), 'BinovoElkarBackup')
-            ),
-            'mailer_transport' => array(
-                'type' => ChoiceType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'choices' => array(
-                    'gmail' => 'gmail',
-                    'mail' => 'mail',
-                    'sendmail' => 'sendmail',
-                    'smtp' => 'smtp'
-                ),
-                'label' => $t->trans('Mailer transport', array(), 'BinovoElkarBackup')
-            ),
-            'mailer_host' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Mailer host', array(), 'BinovoElkarBackup')
-            ),
-            'mailer_user' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Mailer user', array(), 'BinovoElkarBackup')
-            ),
-            'mailer_password' => array(
-                'type' => PasswordType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Mailer password', array(), 'BinovoElkarBackup')
-            ),
-            'mailer_from' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Mailer from', array(), 'BinovoElkarBackup')
-            ),
-            'max_log_age' => array(
-                'type' => ChoiceType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'choices' => array(
-                    'P1D' => $t->trans('One day', array(), 'BinovoElkarBackup'),
-                    'P1W' => $t->trans('One week', array(), 'BinovoElkarBackup'),
-                    'P2W' => $t->trans('Two weeks', array(), 'BinovoElkarBackup'),
-                    'P3W' => $t->trans('Three weeks', array(), 'BinovoElkarBackup'),
-                    'P1M' => $t->trans('A month', array(), 'BinovoElkarBackup'),
-                    'P6M' => $t->trans('Six months', array(), 'BinovoElkarBackup'),
-                    'P1Y' => $t->trans('A year', array(), 'BinovoElkarBackup'),
-                    'P2Y' => $t->trans('Two years', array(), 'BinovoElkarBackup'),
-                    'P3Y' => $t->trans('Three years', array(), 'BinovoElkarBackup'),
-                    'P4Y' => $t->trans('Four years', array(), 'BinovoElkarBackup'),
-                    'P5Y' => $t->trans('Five years', array(), 'BinovoElkarBackup'),
-                    '' => $t->trans('Never', array(), 'BinovoElkarBackup')
-                ),
-                'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')
-            ),
-            'warning_load_level' => array(
-                'type' => PercentType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')
-            ),
-            'pagination_lines_per_page' => array(
-                'type' => IntegerType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Records per page', array(), 'BinovoElkarBackup')
-            ),
-            'url_prefix' => array(
-                'type' => TextType::class,
-                'required' => false,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Url prefix', array(), 'BinovoElkarBackup')
-            ),
-            'disable_background' => array(
-                'type' => CheckboxType::class,
-                'required' => false,
-                'label' => $t->trans('Disable background', array(), 'BinovoElkarBackup')
-            ),
-            'max_parallel_jobs' => array(
-                'type' => IntegerType::class,
-                'required' => true,
-                'attr' => array('class' => 'form-control'),
-                'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
-            ),
-            'post_on_pre_fail' => array(
-                'type' => CheckboxType::class,
-                'required' => false,
-                'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
-            ),
-            
-        );
-        $defaultData = array();
-        foreach ($params as $paramName => $formField) {
-            if ('password' != $formField['type']) {
-                $defaultData[$paramName] = $this->container->getParameter($paramName);
-            }
-        }
-        $formBuilder = $this->createFormBuilder($defaultData);
-        foreach ($params as $paramName => $formField) {
-            $formBuilder->add(
-                $paramName,
-                $formField['type'],
-                array_diff_key($formField, array('type' => true))
-            );
-        }
-        $result = null;
-        $form = $formBuilder->getForm();
+        $em = $this->getDoctrine()->getManager();
+        $settings = $em->getRepository(Settings::class)->find(1);
         
+        if (!$settings) {
+            // This should not happen
+            /*
+            throw $this->createNotFoundException(
+                'Empty settings'
+            );
+            */
+            $settings = new Settings();
+        }
+        
+        $form = $this->createForm(SettingsType::class, $settings);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $allOk = true;
-            foreach ($data as $paramName => $paramValue) {
-                $ok = true;
-                if ('password' == $params[$paramName]['type']) {
-                    if (! empty($paramValue)) {
-                        $ok = $this->setParameter(
-                            $paramName,
-                            $paramValue,
-                            'manageParameters'
-                        );
-                    }
-                } elseif ('checkbox' == $params[$paramName]['type']) {
-                    // Workaround to store value in boolean format
-                    if (! empty($paramValue)) {
-                        $ok = $this->setParameter(
-                            $paramName,
-                            'true',
-                            'manageParameters'
-                        );
-                    } else {
-                        $ok = $this->setParameter(
-                            $paramName,
-                            'false',
-                            'manageParameters'
-                        );
-                    }
-                } else {
-                    if ($paramValue != $this->container->getParameter($paramName)) {
-                        if ('max_parallel_jobs' == $paramName) {
-                            if ($paramValue < 1) {
-                                $ok = false;
-                            } else {
-                                $ok = $this->setParameter(
-                                    $paramName,
-                                    $paramValue,
-                                    'manageParameters'
-                                );
-                            }
-                        } else {
-                            $ok = $this->setParameter(
-                                $paramName,
-                                $paramValue,
-                                'manageParameters'
-                            );
-                        }
-                    }
-                }
-                if (! $ok) {
-                    $this->get('session')->getFlashBag()->add(
-                        'manageParameters',
-                        $t->trans(
-                            'Error saving parameter "%param%"',
-                            array('%param%' => $params[$paramName]['label']),
-                            'BinovoElkarBackup'
-                        )
-                    );
-                    $allOk = false;
-                }
-            }
-            if ($allOk) {
-                $this->get('session')->getFlashBag()->add(
-                    'manageParameters',
-                    $t->trans('Parameters updated', array(), 'BinovoElkarBackup')
-                );
-            }
-            $result = $this->redirect($this->generateUrl('manageParameters'));
-        } else {
-            $result = $this->render(
-                'BinovoElkarBackupBundle:Default:params.html.twig',
-                array(
-                    'form' => $form->createView(),
-                    'showKeyDownload' => file_exists(
-                        $this->container->getParameter('public_key')
-                    )
-                )
-            );
+        if ($form->isSubmitted() && $form->isValid()) {
+            $settings = $form->getData();
+            
+            $em->persist($settings);
+            $em->flush();
         }
-        $this->getDoctrine()->getManager()->flush();
-        $this->clearCache();
         
-        return $result;
+        return $this->render('BinovoElkarBackupBundle:Default:settings.html.twig', [
+            'form'  => $form->createView(),
+            'showKeyDownload' => file_exists($this->get('settings')->getPublicKey())
+        ]);
     }
 
     /**
