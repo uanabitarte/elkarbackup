@@ -14,7 +14,6 @@ class BinovoElkarBackupBundle extends Bundle
     public function boot()
     {
         // Set some static globals
-        Globals::setUploadDir($this->container->getParameter('upload_dir'));
     }
 
 }

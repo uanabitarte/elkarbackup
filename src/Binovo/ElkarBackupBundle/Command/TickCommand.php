@@ -587,7 +587,8 @@ EOF;
         $myClient = $task->getJob()->getClient();
         $myLocation = $task->getJob()->getBackupLocation();
         
-        $globalLimit = $this->getContainer()->getParameter('max_parallel_jobs');
+        $settings = $this->getApplication()->getKernel()->getContainer()->get('settings');
+        $globalLimit = $settings->getMaxParallelJobs();
         $perClientLimit = $myClient->getMaxParallelJobs();
         $perStorageLimit = $myLocation->getMaxParallelJobs();
 
@@ -662,7 +663,7 @@ EOF;
     protected function removeOldLogs()
     {
         $settings = $this->getApplication()->getKernel()->getContainer()->get('settings');
-        $maxAge = $settings->getmaxLogAge();
+        $maxAge = $settings->getMaxLogAge();
         if (!empty($maxAge)) {
             $interval = new DateInterval($maxAge);
             $interval->invert = true;

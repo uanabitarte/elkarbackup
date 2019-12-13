@@ -344,20 +344,12 @@ class DefaultController extends Controller
                 $t->trans("language_$locale", array(), 'BinovoElkarBackup')
             );
         }
-        if ($this->container->hasParameter('disable_background')) {
-            $disable_background = $this->container->getParameter('disable_background');
-        } else {
-            $disable_background = False;
-        }
         
         $helper = $this->get('security.authentication_utils');
         
-        return $this->render('BinovoElkarBackupBundle:Default:login.html.twig', array(
-            'last_username'      => $helper->getLastUsername(),
-            'error'              => $helper->getLastAuthenticationError(),
-            'supportedLocales'   => $localesWithNames,
-            'disable_background' => $disable_background
-        ));
+        return $this->render('BinovoElkarBackupBundle:Default:login.html.twig', [
+            'error' => $helper->getLastAuthenticationError()
+        ]);
     }
     
     /**
@@ -1796,7 +1788,7 @@ EOF;
                 'mysqlpassword' => $this->container->getParameter('database_password'),
                 'mysqluser'     => $this->container->getParameter('database_user'),
                 'server'        => $request->getHttpHost(),
-                'uploads'       => $this->container->getParameter('upload_dir')
+                'uploads'       => $this->get('settings')->getUploadDir()
             )
         );
         $response->headers->set('Content-Type', 'text/plain');

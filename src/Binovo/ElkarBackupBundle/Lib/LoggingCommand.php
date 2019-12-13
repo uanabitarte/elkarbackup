@@ -48,7 +48,8 @@ abstract class LoggingCommand extends ContainerAwareCommand
 
     protected function getUrlPrefix()
     {
-        return $this->getContainer()->getParameter('url_prefix');
+        $settings = $this->getApplication()->getKernel()->getContainer()->get('settings');
+        return $settings->getUrlPrefix();
     }
 
     /**

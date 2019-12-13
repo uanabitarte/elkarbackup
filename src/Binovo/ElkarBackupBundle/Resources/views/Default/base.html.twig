@@ -26,7 +26,7 @@
             {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
             {% endjavascripts %}
-	<script type="text/javascript">var context="{{url_prefix}}";</script>
+	<script type="text/javascript">var context="{{ settings.getUrlPrefix() }}";</script>
         {% endblock %}
 
     </head>

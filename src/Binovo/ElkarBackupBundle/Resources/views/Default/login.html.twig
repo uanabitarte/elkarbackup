@@ -17,7 +17,7 @@
         <link rel="stylesheet" href="{{ asset('css/elkarbackup.css') }}" media="screen" />
 
     </head>
-    <body class="login {%if not disable_background %} bg2{% else %} nobg{% endif %}">
+    <body class="login {%if not settings.getDisableBackground() %} bg2{% else %} nobg{% endif %}">
 
                   <div class="container">
 
